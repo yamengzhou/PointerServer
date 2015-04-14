@@ -74,7 +74,7 @@ public class CursorControl {
 	                    Robot r = new Robot(device);
 	                    
 	                    r.mouseMove(s.x, s.y);
-	                    /*
+	                    
 	                    while(true){
 	                    	if(s.x == start.x && s.y == start.y)
 	                    		break;
@@ -87,7 +87,7 @@ public class CursorControl {
 	                    	if(s.y > start.y)
 	                    		r.mouseMove(start.x, ++start.y);
 	                    }
-	                    */
+	                    
 	                } catch (AWTException e) {
 	                    e.printStackTrace();
 	                }
