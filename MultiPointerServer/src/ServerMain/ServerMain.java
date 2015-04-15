@@ -1,29 +1,15 @@
 package ServerMain;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-
 public class ServerMain {
 	private static final  int PORT = 1149;
 	
 	public static void main(String[] args){
-		ServerSocket serverSocket = null;
-		Socket socket =null;
 		
-		try{
-			serverSocket = new ServerSocket(PORT);
-		}
-		catch(IOException e){
-			e.printStackTrace();
-		}
-		
-		while(true){
-			try{
-				socket = serverSocket.accept();
-			}catch(IOException e){
-				System.out.println("I/O error: " + e);
-			}
-		}
+		System.out.println("Start networking module");
+		Networking net = new Networking(PORT);
+		net.start();
+		System.out.println("Start drawing panel");
+		PanelInterface panel = new PanelInterface();
+		panel.initialization();
 	}
 }
