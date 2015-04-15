@@ -1,0 +1,34 @@
+function processed_point = neighbourProcess(processed_img, i, j,r,c)
+processed_point = 0;
+if(processed_img(i,j) > 0)
+   left = 0;
+   right = 0;
+   up = 0;
+   down = 0;
+
+   if i-1 > 0
+       up = processed_img(i-1,j);
+   end
+   if j-1 > 0
+       left = processed_img(i,j-1);
+   end
+   if i+1 < r
+       down = processed_img(i+1,j);
+   end
+   if j+1 < c
+       right = processed_img(i,j+1);
+   end
+
+   neighbours = [left,right,up,down,processed_img(i,j)];
+   minimum = r*c;
+
+   for idx=1:5
+       if neighbours(idx) > 0 && neighbours(idx) < minimum
+          minimum = neighbours(idx); 
+       end
+   end
+   if minimum < r*c
+        processed_point = minimum;
+   end
+end
+

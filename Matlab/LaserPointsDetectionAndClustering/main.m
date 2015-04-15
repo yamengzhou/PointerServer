@@ -4,3 +4,14 @@ close all, clear all;
 % 
 % generatePoints(centroids,sigma);
 
+latt2 = imread('latt2.png');
+
+dots = double(latt2);
+hsv_dots = rgb2hsv(dots);
+
+test_img = hsv_dots(:,:,3);
+test_img = 255 - test_img;
+
+backup_img = test_img;
+
+[processed_img dots_num]= imgTagging(backup_img);
