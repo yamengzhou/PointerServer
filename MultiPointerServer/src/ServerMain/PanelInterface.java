@@ -2,25 +2,36 @@ package ServerMain;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Stack;
 
 import javax.swing.JPanel;
 import javax.swing.JFrame;
+import javax.swing.Timer;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 
 public class PanelInterface extends JPanel{
 	
 	protected static final int WIDTH = 800, HEIGHT = 600;
 	protected static final int DEPTH = 1;
+	private static int x = 400;
+	private static int y = 300;
 	
-	private EchoThread thread = new EchoThread();
+	private BufferedImage buffer;
+	
 	@Override
 	public String getName(){
 		return "Paints";
@@ -39,53 +50,76 @@ public class PanelInterface extends JPanel{
 	
 	
 	public PanelInterface(){
+		this(1);
+	}
+	
+	public PanelInterface(int a){
+		initialization();
 	}
 	
 	@Override
-	public void paint(Graphics gl){
-		Graphics2D g = (Graphics2D)gl;
+	public void paintComponent(Graphics gl){
 		
+		super.paintComponent(gl);
+        gl.drawImage(buffer, 0, 0, this);
+	}
+	
+
+	public void initialization(){
+		this.buffer = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_ARGB);
+		setBackground(Color.BLACK); 
+        setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        setDoubleBuffered(false);
+		Timer timer = new Timer(40,new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				
+				paintHelper(buffer.getGraphics());
+				
+			}
+		});
+		timer.setRepeats(true);
+        timer.setCoalesce(true);
+        timer.setInitialDelay(0);
+        //startTime = System.currentTimeMillis();
+        timer.start();
+		
+	}
+	private void paintHelper(Graphics gl){
+		// Paint circles based on users data
+		Graphics2D g = (Graphics2D)gl;
+		/*
+		System.out.println("Start painting...");
 		// Paint the entire background using a GradientPaint
 		g.setPaint(new GradientPaint(0,0,new Color(0,255,255),
 				WIDTH,HEIGHT,new Color(0,255,255)));
 		g.fillRect(0, 0, WIDTH, HEIGHT);
+		*/
+		synchronized( EchoThread.class){
 		
-		// Paint circles based on users data
-		if(!EchoThread.userPositions.isEmpty()){
+			Stack<ArrayList<Float>> userPoses = EchoThread.userPositions;
+			if(userPoses.isEmpty()){
+				System.out.println("Stack is empty...");
+				return;
+			}
 			
 			System.out.println("Start drawing....");
 			// Get users position data from the stack
-			//ArrayList<Float> pos = EchoThread.userPositions.pop();
+			ArrayList<Float> pos = userPoses.pop();
 			
 			// Calculate laser point position
-			//Point pOnScreen = CalculateLoc(pos);
+			Point pOnScreen = CalculateLoc(pos);
 			
-			g.setPaint(new GradientPaint(100,0,new Color(0,0,0),
-					WIDTH,HEIGHT,new Color(0,0,0)));
-			g.setStroke(new BasicStroke(15));
-			//g.drawOval(pOnScreen.x, pOnScreen.y, 30, 30);
-			g.drawOval(400, 300, 30, 30);
-			System.out.print("");
+			gl.setColor(new Color(0,255,0));
+			//g.setStroke(new BasicStroke(15));
+			g.drawOval(pOnScreen.x, pOnScreen.y, 30, 30);
+			//g.fillRect(x++, y--, 30, 30);
+			
+			System.out.println(""+ x + " " + y);
+			//invalidate();
+			repaint();
 		}
-		
 	}
-	
-	public void initialization(){
-		
-		
-		JFrame f = new JFrame();
-		f.addWindowListener(new WindowAdapter(){
-			@Override
-			public void windowClosing(WindowEvent e){
-				System.exit(0);
-			}
-		});
-		
-		f.setContentPane(new PanelInterface());
-		f.setSize(WIDTH,HEIGHT);
-		f.setVisible(true);
-	}
-	
 	// Calculate laser point position
 	public Point CalculateLoc(ArrayList<Float> vec){
 		
@@ -116,6 +150,73 @@ public class PanelInterface extends JPanel{
 		return current;
 		//System.out.println("The location on the screen is: " + current.x + " " + current.y);
 	}
-	
-	
+	/*
+	public class Animation{
+		private Graphics2D gl;
+		private long startTime;
+		private BufferedImage buffer;
+		
+		public Animation(){
+			
+		}
+		
+		public Animation(Graphics2D gl){
+			this.gl = gl;
+		}
+		
+		public void start(){
+
+			this.buffer = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_ARGB);
+			setDoubleBuffered(false);
+			Timer timer = new Timer(40,new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e){
+					
+					paintHelper(buffer.getGraphics());
+					
+				}
+			});
+			timer.setRepeats(true);
+            timer.setCoalesce(true);
+            timer.setInitialDelay(0);
+            startTime = System.currentTimeMillis();
+            timer.start();
+		}
+		
+		private synchronized void paintHelper(Graphics gl){
+			// Paint circles based on users data
+			Graphics2D g = (Graphics2D)gl;
+			System.out.println("Start painting...");
+			// Paint the entire background using a GradientPaint
+			g.setPaint(new GradientPaint(0,0,new Color(0,255,255),
+					WIDTH,HEIGHT,new Color(0,255,255)));
+			g.fillRect(0, 0, WIDTH, HEIGHT);
+			
+			synchronized( EchoThread.class){
+			
+				Stack<ArrayList<Float>> userPoses = EchoThread.userPositions;
+				if(userPoses.isEmpty()){
+					System.out.println("Stack is empty...");
+					//return;
+				}
+				
+				System.out.println("Start drawing....");
+				// Get users position data from the stack
+				//ArrayList<Float> pos = userPoses.pop();
+				
+				// Calculate laser point position
+				//Point pOnScreen = CalculateLoc(pos);
+				
+				g.setColor(new Color(0,255,0));
+				//g.setStroke(new BasicStroke(15));
+				//g.drawOval(pOnScreen.x, pOnScreen.y, 30, 30);
+				//g.fillOval(x, y, 30, 30);
+				
+				System.out.println(""+ x + " " + y);
+				repaint();
+			}
+		}
+		
+	}
+	*/
 }
