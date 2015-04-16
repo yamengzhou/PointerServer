@@ -1,3 +1,12 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Author: Yameng Zhou
+% Date: April 15
+% Description: This is a matlab code for dots clustering waiting for
+% further optimization and modification.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 function centroids = findCentroids(processed_img,dots_num)
 % dots_num = 25;
 centroids = zeros(0,2);

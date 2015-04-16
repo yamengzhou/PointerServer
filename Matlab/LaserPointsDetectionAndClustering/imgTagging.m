@@ -1,3 +1,12 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Author: Yameng Zhou
+% Date: April 15
+% Description: This is a matlab code for dots clustering waiting for
+% further optimization and modification.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 function [processed_img num_dots]= imgTagging(img)
 % img = backup_img;
 [r,c] = size(img);

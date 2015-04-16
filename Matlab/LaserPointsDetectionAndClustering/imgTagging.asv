@@ -1,5 +1,13 @@
-% function processed_img = imgTagging(img)
-img = backup_img;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Author: Yameng Zhou
+% Date: April 15
+% Description: This is a matlab code for dots clustering waiting for
+% further optimization and modification.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+function [processed_img num_dots]= imgTagging(img)
+% img = backup_img;
 [r,c] = size(img);
 
 processed_img = zeros(r,c);
@@ -28,8 +36,9 @@ for i = r:-1:1
     end
 end
 
+
+%% To relabel the pixel based on the total number
 count = 1;
-tag = 0;
 m = containers.Map('KeyType','double','ValueType','int32');
 
 for i = 1:r
@@ -43,7 +52,7 @@ end
 keys = m.keys;
 keys_mat = cell2mat(keys);
 [k_r k_c] = size(keys_mat);
-
+num_dots = k_c;
 replacement = containers.Map('KeyType','double','ValueType','double');
 for i = 1:k_c
    replacement(keys_mat(i)) = count;
@@ -52,8 +61,9 @@ end
 
 for i = 1:r
     for j = 1:c
-        
-        
+        if processed_img(i,j) ~= 0 && replacement.isKey(processed_img(i,j))
+           processed_img(i,j) = replacement(processed_img(i,j)); 
+        end
     end
 end
 

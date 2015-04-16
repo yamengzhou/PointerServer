@@ -1,3 +1,10 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Author: Yameng Zhou
+% Date: April 15
+% Description: This is a matlab code for dots clustering waiting for
+% further optimization and modification.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 close all, clear all;
 % centroids = [[1,1];[4,4];[7,3]];
 % sigma = [[0.3,0.2];[0.2,0.3]];
@@ -65,8 +72,6 @@ for i = 1:Cluster_Num
    position = [l_x-15,l_y-30];
    [value cols] = size(dots_set);
    output = insertText(output,position,value,'AnchorPoint','LeftBottom');
-   
-   imshow(output);
 end
 
 imshow(output);
