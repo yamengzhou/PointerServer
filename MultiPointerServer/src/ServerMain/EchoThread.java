@@ -9,7 +9,14 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Stack;
-
+/******************************************************************/
+//Author: Yameng Zhou
+//Date: April 15
+//Description: This is the source code for a cellphone pointer, Server
+//Side.
+//This is only the test version.
+//
+/******************************************************************/
 public class EchoThread extends Thread{
 	public static Stack<ArrayList<Float>> userPositions = new Stack<ArrayList<Float>>();
 	protected Socket socket;
@@ -39,7 +46,9 @@ public class EchoThread extends Thread{
 			FloatBuffer floatbuffer = bytebuffer.asFloatBuffer();
 			float[] result = new float[floatbuffer.remaining()];
 			floatbuffer.get(result);
-			System.out.println("The result from cellphone is: " + result[0] + " " + result[1] + " " + result[2]);
+			
+			//System.out.println("The result from cellphone is: " + result[0] + " " + result[1] + " " + result[2]);
+			
 			ArrayList<Float> freshPos = new ArrayList<Float>();
 			for(int i = 0; i < result.length; ++i)
 				freshPos.add(result[i]);

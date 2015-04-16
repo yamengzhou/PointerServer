@@ -1,3 +1,12 @@
+/******************************************************************/
+// Author: Yameng Zhou
+// Date: April 15
+// Description: This is the source code for a cellphone pointer, Server
+// Side.
+// This is only the test version.
+//
+/******************************************************************/
+
 package ServerMain;
 
 import java.io.IOException;

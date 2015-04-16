@@ -1,3 +1,12 @@
+/******************************************************************/
+// Author: Yameng Zhou
+// Date: April 15
+// Description: This is the source code for a cellphone pointer, Server
+// Side.
+// This is only the test version.
+//
+/******************************************************************/
+
 package ServerMain;
 
 import java.awt.BasicStroke;
@@ -22,13 +31,13 @@ import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-
 public class PanelInterface extends JPanel{
 	
 	protected static final int WIDTH = 800, HEIGHT = 600;
 	protected static final int DEPTH = 1;
 	private static int x = 400;
 	private static int y = 300;
+	private static int delay = 10;
 	
 	private BufferedImage buffer;
 	
@@ -58,10 +67,10 @@ public class PanelInterface extends JPanel{
 	}
 	
 	@Override
-	public void paintComponent(Graphics gl){
-		
+	public void paintComponent(Graphics gl){	
 		super.paintComponent(gl);
         gl.drawImage(buffer, 0, 0, this);
+        
 	}
 	
 
@@ -69,54 +78,43 @@ public class PanelInterface extends JPanel{
 		this.buffer = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_ARGB);
 		setBackground(Color.BLACK); 
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        setDoubleBuffered(false);
-		Timer timer = new Timer(40,new ActionListener(){
+        setDoubleBuffered(true);
+        
+        // Set up a loop to plot dots.
+		new Timer(delay,new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
-				
+				buffer.getGraphics().clearRect(0, 0, WIDTH, HEIGHT);
 				paintHelper(buffer.getGraphics());
 				
 			}
-		});
-		timer.setRepeats(true);
-        timer.setCoalesce(true);
-        timer.setInitialDelay(0);
-        //startTime = System.currentTimeMillis();
-        timer.start();
-		
+		}).start();
+
 	}
 	private void paintHelper(Graphics gl){
 		// Paint circles based on users data
-		Graphics2D g = (Graphics2D)gl;
-		/*
-		System.out.println("Start painting...");
-		// Paint the entire background using a GradientPaint
-		g.setPaint(new GradientPaint(0,0,new Color(0,255,255),
-				WIDTH,HEIGHT,new Color(0,255,255)));
-		g.fillRect(0, 0, WIDTH, HEIGHT);
-		*/
 		synchronized( EchoThread.class){
 		
-			Stack<ArrayList<Float>> userPoses = EchoThread.userPositions;
-			if(userPoses.isEmpty()){
-				System.out.println("Stack is empty...");
-				return;
+			//Stack<ArrayList<Float>> userPoses = EchoThread.userPositions;
+			while(!EchoThread.userPositions.isEmpty()){
+				//System.out.println("Stack is empty...");
+				//System.out.println("Start drawing....");
+				
+				// Get users position data from the stack
+				ArrayList<Float> pos = EchoThread.userPositions.pop();
+				
+				// Calculate laser point position
+				Point pOnScreen = CalculateLoc(pos);
+				
+				gl.setColor(new Color(0,255,0));
+				//g.setStroke(new BasicStroke(15));
+				gl.drawOval(pOnScreen.x, pOnScreen.y, 30, 30);
+				//gl.fillRect(x++, y--, 30, 30);
+				
+				//System.out.println(""+ x + " " + y);
 			}
 			
-			System.out.println("Start drawing....");
-			// Get users position data from the stack
-			ArrayList<Float> pos = userPoses.pop();
-			
-			// Calculate laser point position
-			Point pOnScreen = CalculateLoc(pos);
-			
-			gl.setColor(new Color(0,255,0));
-			//g.setStroke(new BasicStroke(15));
-			g.drawOval(pOnScreen.x, pOnScreen.y, 30, 30);
-			//g.fillRect(x++, y--, 30, 30);
-			
-			System.out.println(""+ x + " " + y);
-			//invalidate();
+			EchoThread.userPositions.clear();
 			repaint();
 		}
 	}
@@ -127,15 +125,7 @@ public class PanelInterface extends JPanel{
 		
 		for(int i = 0; i < vec.size(); ++i)
 			rot_vec[i] = vec.get(i);
-		
-		System.out.println("current ang : " + rot_vec[0]+ " " + rot_vec[1]+ " " + rot_vec[2]);
-		//System.out.println("current angles: " + angles[0]+ " " + angles[1] + " " + angles[2]);
-	/*	
-		for(float i: angles){
-			if(i < boundary[0] || i > boundary[1])
-				return;
-		}
-	*/
+
 		Point current = new Point();
 		
 		current.x = (int) (0.5 * WIDTH *(1 - DEPTH * Math.tan((double)rot_vec[2])));

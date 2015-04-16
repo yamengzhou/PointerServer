@@ -1,4 +1,14 @@
+/******************************************************************/
+// Author: Yameng Zhou
+// Date: April 15
+// Description: This is the source code for a cellphone pointer, Server
+// Side.
+// This is only the test version.
+//
+/******************************************************************/
 package ServerMain;
+
+import java.awt.Graphics;
 
 import javax.swing.JApplet;
 
@@ -25,5 +35,10 @@ public class ServerMain extends JApplet{
 		setSize(800, 600);
 		PanelInterface panel = new PanelInterface();
 		setContentPane(panel);
+	}
+	
+	@Override
+	public void update(Graphics g){
+		
 	}
 }
